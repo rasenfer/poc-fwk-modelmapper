@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.modelmapper.ModelMapper;
 
-import poc.fwk.modelmapper.TypeMaps;
-
 public class LazyLoadModelMapper extends ModelMapper {
 
 	@Override
