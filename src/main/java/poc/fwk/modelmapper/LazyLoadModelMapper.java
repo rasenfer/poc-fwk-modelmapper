@@ -1,12 +1,20 @@
 package poc.fwk.modelmapper;
 
 import java.lang.reflect.Type;
-import java.util.stream.Stream;
+import java.util.Arrays;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.spi.ErrorMessage;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class LazyLoadModelMapper extends ModelMapper {
+
+	public static final String LAZY_MODEL_MAPPER_THREAD_NAME = "_LAZY";
 
 	@Override
 	public <D> D map(Object source, Class<D> destinationType) {
@@ -23,8 +31,7 @@ public class LazyLoadModelMapper extends ModelMapper {
 	public <D> D map(Object source, Class<D> destinationType, String typeMapName) {
 		D dest;
 		if (TypeMaps.INCLUDE_LAZY_VALUES.equals(typeMapName)) {
-			initializeValues(source);
-			dest = super.map(source, destinationType);
+			dest = mapLazy(() -> super.map(source, destinationType));
 		} else if (TypeMaps.EXCLUDE_LAZY_VALUES.equals(typeMapName)) {
 			dest = super.map(source, destinationType);
 		} else {
@@ -48,8 +55,7 @@ public class LazyLoadModelMapper extends ModelMapper {
 	public <D> D map(Object source, Type destinationType, String typeMapName) {
 		D dest;
 		if (TypeMaps.INCLUDE_LAZY_VALUES.equals(typeMapName)) {
-			initializeValues(source);
-			dest = super.map(source, destinationType);
+			dest = mapLazy(() -> super.map(source, destinationType));
 		} else if (TypeMaps.EXCLUDE_LAZY_VALUES.equals(typeMapName)) {
 			dest = super.map(source, destinationType);
 		} else {
@@ -70,8 +76,10 @@ public class LazyLoadModelMapper extends ModelMapper {
 	@Override
 	public void map(Object source, Object destination, String typeMapName) {
 		if (TypeMaps.INCLUDE_LAZY_VALUES.equals(typeMapName)) {
-			initializeValues(source);
-			super.map(source, destination);
+			mapLazy(() -> {
+				super.map(source, destination);
+				return null;
+			});
 		} else if (TypeMaps.EXCLUDE_LAZY_VALUES.equals(typeMapName)) {
 			super.map(source, destination);
 		} else {
@@ -79,16 +87,17 @@ public class LazyLoadModelMapper extends ModelMapper {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void initializeValues(Object source) {
-		if (source != null) {
-			if (Iterable.class.isInstance(source)) {
-				Iterable.class.cast(source).forEach(this::initializeValues);
-			} else if (source.getClass().isArray()) {
-				Stream.of((Object[]) source).forEach(this::initializeValues);
-			} else {
-				ReflectionToStringBuilder.toString(source);
-			}
+	private <D> D mapLazy(Supplier<D> supplier) {
+		try {
+			return CompletableFuture.supplyAsync(() -> {
+				Thread currentThread = Thread.currentThread();
+				currentThread.setName(currentThread.getName() + LAZY_MODEL_MAPPER_THREAD_NAME);
+				return supplier.get();
+			}).get();
+		} catch (MappingException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new MappingException(Arrays.asList(new ErrorMessage(e.getMessage(), e)));
 		}
 	}
 }

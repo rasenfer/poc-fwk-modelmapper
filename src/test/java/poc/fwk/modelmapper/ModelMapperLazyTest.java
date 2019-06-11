@@ -87,6 +87,7 @@ public class ModelMapperLazyTest {
 
 		PojoEntityEntry entry = new PojoEntityEntry();
 		entry.setValue("entry");
+		// entry.setParent(source);
 		source.setEntries(Arrays.asList(entry));
 
 		PojoEntityElement element = new PojoEntityElement();

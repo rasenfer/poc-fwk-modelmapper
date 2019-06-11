@@ -17,4 +17,7 @@ public class PojoEntityEntry {
 
 	@Column
 	private String value;
+
+	// @ManyToOne(fetch = FetchType.LAZY, optional = false)
+	// private PojoEntity parent;
 }

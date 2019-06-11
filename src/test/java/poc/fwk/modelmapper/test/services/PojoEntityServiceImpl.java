@@ -35,12 +35,12 @@ public class PojoEntityServiceImpl implements PojoEntityService {
 
 	@Override
 	public PojoDest getEntityWithLazyValues(Integer id) {
-		return modelMapper.map(pojoEntityRepository.findOne(id), PojoDest.class);
+		return modelMapper.map(pojoEntityRepository.getOne(id), PojoDest.class);
 	}
 
 	@Override
 	public PojoDest getEntityWithoutLazyValues(Integer id) {
-		return modelMapper.map(pojoEntityRepository.findOne(id), PojoDest.class,
+		return modelMapper.map(pojoEntityRepository.getOne(id), PojoDest.class,
 				TypeMaps.EXCLUDE_LAZY_VALUES);
 	}
 }
