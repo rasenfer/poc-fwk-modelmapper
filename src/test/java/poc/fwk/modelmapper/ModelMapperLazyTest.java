@@ -47,7 +47,7 @@ public class ModelMapperLazyTest {
 				.addMapping(PojoEntity::getEntry, PojoDest::setDestEntry)
 				// skip mapping
 				.addMappings(mapper -> mapper.skip(PojoDest::setSkipped));
-		id = pojoEntityRepository.saveAndFlush(getPojoEntity()).getId();
+		id = pojoEntityRepository.save(getPojoEntity()).getId();
 	}
 
 	@Test
