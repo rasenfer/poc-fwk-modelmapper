@@ -4,7 +4,6 @@ import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,9 +18,6 @@ import poc.fwk.modelmapper.LazyLoadModelMapper;
 @Order(Integer.MAX_VALUE - 1)
 @ConditionalOnClass(org.hibernate.Session.class)
 public class ModelMapperLazyConfigurer extends ModelMapperConfigurer {
-
-	@Value("${poc.fwk.basepackage:poc.fwk.*}")
-	private String basePackage;
 
 	@Bean
 	@Override
