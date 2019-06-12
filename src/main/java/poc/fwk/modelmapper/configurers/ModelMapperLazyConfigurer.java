@@ -34,16 +34,16 @@ public class ModelMapperLazyConfigurer extends ModelMapperConfigurer {
 				.setPropertyCondition(condition -> {
 					Object value = condition.getSource();
 					boolean map = true;
-					if (!Thread.currentThread().getName().endsWith(LazyLoadModelMapper.LAZY_MODEL_MAPPER_THREAD_NAME)) {
-						if (value != null && ProxyFactory.isProxyClass(value.getClass())) {
+					if (value != null && !Thread.currentThread().getName().endsWith(LazyLoadModelMapper.LAZY_MODEL_MAPPER_THREAD_NAME)) {
+						if (ProxyFactory.isProxyClass(value.getClass())) {
 							MethodHandler handler = ProxyFactory.getHandler(Proxy.class.cast(value));
-							if (JavassistLazyInitializer.class.isInstance(value.getClass())) {
+							if (JavassistLazyInitializer.class.isInstance(handler)) {
 								map = !JavassistLazyInitializer.class.cast(handler).isUninitialized();
 							}
 						}
-						map = map && value != null && (!HibernateProxy.class.isInstance(value)
+						map = map && (!HibernateProxy.class.isInstance(value)
 								|| !HibernateProxy.class.cast(value).getHibernateLazyInitializer().isUninitialized());
-						map = map && value != null && (!PersistentCollection.class.isInstance(value)
+						map = map && (!PersistentCollection.class.isInstance(value)
 								|| PersistentCollection.class.cast(value).wasInitialized());
 					}
 					return map;
