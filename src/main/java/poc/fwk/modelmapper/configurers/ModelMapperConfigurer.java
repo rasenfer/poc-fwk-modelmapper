@@ -4,9 +4,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 
 @Configuration
-@ConditionalOnMissingBean(ModelMapper.class)
+@Order(Integer.MAX_VALUE)
+@ConditionalOnMissingBean(ModelMapperLazyConfigurer.class)
 public class ModelMapperConfigurer {
 
 	@Bean
