@@ -35,7 +35,7 @@ public class ModelMapperTest {
 	private ModelMapperConfigurer modelMapperConfigurer;
 
 	@Autowired
-	private ModelMapperLazyConfigurer modelMapperLazySkipModuleConfigurer;
+	private ModelMapperLazyConfigurer modelMapperLazyConfigurer;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -53,7 +53,7 @@ public class ModelMapperTest {
 	public void testContext() {
 		assertNotNull(modelMapper);
 		assertNotNull(modelMapperConfigurer);
-		assertNotNull(modelMapperLazySkipModuleConfigurer);
+		assertNotNull(modelMapperLazyConfigurer);
 	}
 
 	@Test

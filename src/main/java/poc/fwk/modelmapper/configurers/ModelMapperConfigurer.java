@@ -2,12 +2,14 @@ package poc.fwk.modelmapper.configurers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 @Configuration
 @Order(Integer.MAX_VALUE)
+@ConditionalOnSingleCandidate(ModelMapperConfigurer.class)
 @ConditionalOnMissingBean({ ModelMapperLazyConfigurer.class })
 public class ModelMapperConfigurer {
 
