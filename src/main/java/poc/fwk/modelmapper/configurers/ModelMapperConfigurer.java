@@ -8,7 +8,7 @@ import org.springframework.core.annotation.Order;
 
 @Configuration
 @Order(Integer.MAX_VALUE)
-@ConditionalOnMissingBean(ModelMapperLazyConfigurer.class)
+@ConditionalOnMissingBean({ ModelMapperLazyConfigurer.class })
 public class ModelMapperConfigurer {
 
 	@Bean
