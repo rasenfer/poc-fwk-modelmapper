@@ -16,7 +16,7 @@ import poc.fwk.modelmapper.LazyLoadModelMapper;
 
 @Configuration
 @Order(Integer.MAX_VALUE - 1)
-@ConditionalOnClass(org.hibernate.Session.class)
+@ConditionalOnClass(HibernateProxy.class)
 public class ModelMapperLazyConfigurer extends ModelMapperConfigurer {
 
 	@Bean
@@ -34,7 +34,8 @@ public class ModelMapperLazyConfigurer extends ModelMapperConfigurer {
 				.setPropertyCondition(condition -> {
 					Object value = condition.getSource();
 					boolean map = true;
-					if (value != null && !Thread.currentThread().getName().endsWith(LazyLoadModelMapper.LAZY_MODEL_MAPPER_THREAD_NAME)) {
+					if (value != null && LazyLoadModelMapper.class.isInstance(modelMapper)
+							&& !LazyLoadModelMapper.class.cast(modelMapper).getLazyInclude()) {
 						if (ProxyFactory.isProxyClass(value.getClass())) {
 							MethodHandler handler = ProxyFactory.getHandler(Proxy.class.cast(value));
 							if (JavassistLazyInitializer.class.isInstance(handler)) {
